@@ -17,7 +17,7 @@
 	require_once 'Recipients.php';
 	require_once 'OpensClicks.php';
 
-  ini_set('max_execution_time',2400);  // 40 minutes
+  ini_set('max_execution_time',0);  // No timeout limit
 
   $Log = new Log( __FILE__);
   $Log->writeToLog( 'initiate');
@@ -29,7 +29,7 @@
 
 	//---------------  GET MESSAGES  ---------------
 	$newMessages = array();
-	if (!empty( $messageIDs)) {     // message IDs were passed in...
+	if (!empty( $messageIDs)) {     // message IDs were passed via the query string...
 		foreach ($messageIDs as $messageId) {
 			$messages = new Messages( array( 'method' => $_REQUEST['method'], 'messageIDs' => $messageId));
 			// Get the messages from iMods and save them to database
@@ -42,14 +42,15 @@
 	else {    // otherwise, get messages based on timestamps
 		// Create new Messages object by passing in the parameters from the query string to this program (from, to, max results, etc.)
 		$messages = new Messages( $_REQUEST);
-		// Get the messages from iMods and save them to database
+		// Get the messages from iMods, save them to database, and get any new (non-processed) message IDs
 		$newMessages = $messages->retrieveMessages();
 	}
 
-	// Loop through $newMessages and do the rest of the processing for each msg
-  $messageCountTypes = array('delivers', 'bounces', 'recipients', 'opens', 'clicks');  // add 'links' later
-  $log_msg = 'Retrieved and stored '. count( $newMessages) . ' messages';
+  $log_msg = 'Number of messages to be processed: '. count( $newMessages);
   $Log->writeToLog( '', $log_msg);
+
+	// Loop through $newMessages and do the rest of the processing for each msg
+  $messageCountTypes = array('delivers', 'bounces', 'recipients', 'opens', 'clicks');  // todo: add 'links' later. For now, done below
   foreach ($newMessages as $messageId) {
   	    $log_msg = 'Processing MsgID '. $messageId;
 			  $Log->writeToLog( '', $log_msg);

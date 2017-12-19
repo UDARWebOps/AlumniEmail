@@ -13,6 +13,7 @@
   require_once 'Message/MessageRepository.php';
 	require_once 'Log/Log.php';
 
+	define( BOOL_ON, 1);
 
 	class Recipients
   {
@@ -77,7 +78,7 @@
 			    return;
 		    }
 
-		    $totalRecs = $results->total;  // Total is sent with every API response. Updating it just in case it's differnt
+		    $totalRecs = $results->total;  // Total is sent with every API response. Updating it just in case it's different
 
 		    // Process list of recipients
 		    if (isset($results)) {
@@ -96,6 +97,8 @@
 		    }
 		    $this->queryParams['startAt'] += $this->queryParams['maxResults'];
 		    }
+		    // Recipients retrieved and save.  Now set the flag in Messages tables
+		    $MessageRepository->setRecipProcessed( $this->messageId, BOOL_ON);
 	    }
 
     //*****************  S A V E   R E C I P I E N T  **********************************************
@@ -114,14 +117,6 @@
       }
       else return 1;
     }
-
-		//NOT USED*****************  G E T   R E C I P I E N T S  **********************************************
-//		public function getRecipients() {
-//      $recipientRepository = new \AlumniEmail\RecipientRepository();
-//      $results = $recipientRepository->getAll( $this->messageId);
-//      return $results;
-//    }
-
 
     //*******************************************
     public function setCount( $type) {

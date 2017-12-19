@@ -236,20 +236,13 @@
       //*******************************************
       public function getRecipients()
       {
-//        if (isset( $msgID)) {
-          $recipientObj = new Recipient();
-//          $this->table = 'recipients' . $msgID;
-	        $totalRecs = $this->getCount();
           $stmt = $this->connection->prepare('
               SELECT * FROM ' . $this->table . ' LIMIT ' . $this->numberProcessed . ',10000 
           ');
 	        $stmt->setFetchMode( PDO::FETCH_ASSOC);
           $stmt->execute();
 		      $this->numberProcessed += $stmt->rowCount();
-		      return $stmt->fetchAll();
-	        // fetchAll() will create an array
-
-//        }
+		      return $stmt->fetchAll();          // fetchAll() will create an array
       }
 
 	  //*******************************************

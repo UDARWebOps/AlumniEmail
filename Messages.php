@@ -66,55 +66,49 @@
     public function retrieveMessages() {
       // Instantiate API Obj passing URL params
       $myAPICall = new APICall( $this->urlItems);
-	    $messages = $myAPICall->doAPI($this->queryParams);
+	    $messages = $myAPICall->doAPI($this->queryParams);  // get a preview of data to determine multiple or single msg
 
 	    // ---------  M U L T I P L E   M E S S A G E S
 	    if (isset( $messages->data)) {
 		    $totalRecs = -1;
 		    // Paging loop for getting all records
-		    // Call API using paging parameters in query string
 		    while ($totalRecs == -1 || ($this->queryParams['startAt'] < $totalRecs)) {
+			    // Call API using paging parameters in query string
+			    $messages = $myAPICall->doAPI($this->queryParams);
 			    // Check for ERROR
 			    if ($messages instanceof \Exception) {
             $this->Log->writeToLog( '', '(Multiple Messages) '  . $messages->getMessage());
 				    return;  // Bail
 			    }
-
-			    $totalRecs = $messages->total;
-			    $messageRepository = new MessageRepository();
-			    // Loop through each message received
+			    // Loop through each message
 			    foreach ($messages->data as $message) {
-				    $msg = '<Messages::retrieveMessages> MsgId = ' . $message->id;
-				    try {
-					    $message = new Message( $message);
-              $message->subjectLine = self::removeEmoji( $message->subjectLine);
-					    if (self::saveMessage($messageRepository, $message)) {  // Save msg.  If successful...
-						    $this->storedMessages[] = $message->id;   // ... put id in array to be used for subsequent calls for Counts
-					    }
-				    } catch (Exception $e) {
-              $this->Log->writeToLog( '', $msg  . $e->getMessage());
-				    }
+				    self::processMessage( new Message ($message));
 			    }
+			    $totalRecs = $messages->total;
 			    $this->queryParams['startAt'] += $this->queryParams['maxResults'];    // Adjust counters for paging
 		    }
 	    }
       //---------   S I N G L E   M E S S A G E
       else {
-        try {
-          $message = new Message( $messages);
-          $message->subjectLine = self::removeEmoji( $message->subjectLine);
-	        $messageRepository = new MessageRepository();
-	        if (self::saveMessage( $messageRepository, $message)) {
-	        	// Add ID to array for further processing
-            $this->storedMessages[] = $message->id;
-          }
-        } catch (Exception $e) {
-          echo $e->getMessage();
-        }
+	      self::processMessage( new Message( $messages));
       }
 
       return $this->storedMessages;
     }
+
+    //*****************  P R O C E S S   M E S S A G E  **********************************************
+		public function processMessage( &$objMessage){
+			try {
+				$messageRepository = new MessageRepository();
+				$logMsg = '<Messages::retrieveMessages> MsgId = ' . $objMessage->id;
+				$objMessage->subjectLine = self::removeEmoji( $objMessage->subjectLine);
+				if (self::saveMessage( $messageRepository, $objMessage)) {  // Save msg.  If successful...
+					$this->storedMessages[] = $objMessage->id;               // ... put id in array to be used for subsequent calls for Counts
+				}
+			} catch (Exception $e) {
+				$this->Log->writeToLog( '', $logMsg  . $e->getMessage());
+			}
+		}
 
     //*****************  S A V E   M E S S A G E  **********************************************
     public function saveMessage( $messageRepository, $Message) {
@@ -131,10 +125,10 @@
         elseif (-1 === $rc) {
 	        $this->Log->writeToLog( '', $msg . ' -- Message info not changed, did not update ');
 	        // If recipient file has not been processed, we want to continue with this msg
-	        if (!$messageRepository->isRecipProcessed($Message->id)) {
-//	        $RecipientRepository = new RecipientRepository( $Message->id);
-//	        $rc = $RecipientRepository->isEmpty();  // If recipient table is empty, return '1'
+	        if (!$messageRepository->isRecipProcessed( $Message->id)) {
 		        $rc = 1;
+	        } else {
+	        	$rc = 0;
 	        }
         }
         else {

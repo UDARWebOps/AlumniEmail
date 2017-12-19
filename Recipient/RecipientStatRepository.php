@@ -58,7 +58,7 @@
               self::checkMessageID( $Recipient, $dbRecipientStat, $msgID, $var);
             }
             // iMods admins can receive an inordinate amount of emails, so cut them off if json string is longer than 1000
-            if (strlen( $dbRecipientStat->emailReceives) <= 1000 ) {
+            if (strlen( $dbRecipientStat->emailReceives) <= 500 ) {
 	            $rc = self::updateRecipientStat($dbRecipientStat);
 	            return $rc;
             }
@@ -203,14 +203,8 @@
 		  //*******************************************
 		  public function findAll( $Log)   // Get all recipient records in the recipient stat table
 		  {
-			  $Log->writeToLog( '', 'In findAll.  Table = ' . $this->table);
-//			  $recipientStatObj = new RecipientStat();
 			  $preparedStmt = 'SELECT * FROM ' . $this->table;
-			  $Log->writeToLog( '', 'MySQL stmt = "' . $preparedStmt);
 			  $stmt = $this->connection->prepare($preparedStmt);
-//			  $stmt = $this->connection->prepare('SELECT * FROM ' . $this->table . '');
-//			  $Log = new Log( __FILE__, 'stat');
-			  $Log->writeToLog( '', 'After PREPARE stmt.');
 			  $stmt->setFetchMode( PDO::FETCH_ASSOC);
 			  $stmt->execute();
 

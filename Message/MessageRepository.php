@@ -119,7 +119,32 @@
           }
       }
 
-      //*******************************************
+		  //*******************************************
+		  public function   setRecipProcessed( $messageId, $flag) {
+			  $Message = new Message( (object) [
+				  'id'    =>$messageId,
+				  'recipProcessed'  => $flag
+			  ]);
+			  $preparedStmt = '
+	            UPDATE messages
+	            SET ';
+			  $preparedStmt .= 'recipProcessed' . ' = ?';
+			  $preparedStmt .= ' WHERE id = ?';
+
+			  $stmt = $this->connection->prepare( $preparedStmt);
+			  $stmt->bindParam( 1, $Message->recipProcessed, PDO::PARAM_BOOL);
+			  $stmt->bindParam( 2, $Message->id, PDO::PARAM_INT);
+
+			  try {
+				  return $stmt->execute();
+			  }
+			  catch (\Exception $e) {
+				  return $e;
+			  }
+
+		  }
+
+		  //*******************************************
       private function executeSQL( $type, $preparedStmt, Message $Message) {
           $stmt = $this->connection->prepare( $preparedStmt);
 
@@ -162,9 +187,13 @@
 
         $messageObj = new Message();
         $stmt->bindParam( ':id', $id);
-        $stmt->execute();
-        $stmt->setFetchMode( PDO::FETCH_INTO, $messageObj);
-        $message =  $stmt->fetch();
+	      try {
+		      $stmt->execute();
+		      $stmt->setFetchMode(PDO::FETCH_INTO, $messageObj);
+		      $message = $stmt->fetch();
+	      } catch (Exception $e) {
+			      $this->Log->writeToLog( '', 'MessageRepository.php::findMessage'  . $e->getMessage());
+	      }
         return $message;           // this returns a Message obj
       }
 
@@ -192,7 +221,6 @@
 			  $preparedStmt = 'SELECT Messages.* FROM Messages WHERE id = :id';
 			  $stmt = $this->connection->prepare( $preparedStmt);
 			  $stmt->bindParam( ':id', $id);
-			  $Log->writeToLog( '', 'Stmt = ' . $preparedStmt);
 			  $messageObj = new Message();
 			  $stmt->execute();
 			  $stmt->setFetchMode( PDO::FETCH_INTO, $messageObj);
@@ -209,7 +237,6 @@
 			  $stmt = $this->connection->prepare( $preparedStmt);
 			  foreach ($ids as $k => $id)
 				  $stmt->bindValue(($k+1), $id);
-			  $Log->writeToLog( '', 'Stmt = ' . $preparedStmt);
 			  $messageObj = new Message();
 			  $stmt->execute();
 			  $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -226,11 +253,15 @@
           return $this->connection;
       }
 
-		  //*******************************************
+	    //*******************************************
 		  public function isRecipProcessed( $id)
 		  {
 			  $message = self::findMessage( $id);
-			  return $message->recipProcessed;
+			  if ($message instanceof Message) {
+				  return $message->recipProcessed;
+			  } else {
+			  	return 0;
+			  }
 		  }
 
 		  //*******************************************

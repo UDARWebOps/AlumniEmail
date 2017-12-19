@@ -28,7 +28,7 @@
 	$from = '';
 	$to = '';
 
-  ini_set('max_execution_time',2400);  // 40 minutes
+  ini_set('max_execution_time',0);  // no timeout limit
 
   $Log = new Log( __FILE__, 'stat');
   $Log->writeToLog( 'initiate');
@@ -75,7 +75,7 @@
 
 
     //Loop thru the message IDs returned:
-    //  1) Get all recipient records for the message
+    //  1) Get all recipient records for the message  (in local d/b)
     //  2) for each recipient, create/update the email stats record
     $RecipientStatRepository = new RecipientStatRepository( $_REQUEST['year'], $_REQUEST['month']);
     foreach ($messageIDs as $message) {
