@@ -33,7 +33,7 @@
       $messageIDs[] = $message->id;   // create array of msg ids
     }
   }
-  $log_msg = 'Number of messages to be processed: '. count( $newMessages);
+  $log_msg = 'Number of messages to be processed: '. count( $messageIDs);
   $Log->writeToLog( '', $log_msg);
 
   // Now loop through the message id array and get the opens and clicks
