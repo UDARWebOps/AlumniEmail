@@ -6,9 +6,12 @@
    * Time: 2:20 PM
    */
   namespace AlumniEmail;
+  require_once 'Log/Log.php';
 	require_once 'Messages.php';
 	require_once 'OpensClicks.php';
 
+  $Log = new Log( __FILE__);
+  $Log->writeToLog( 'initiate');
 
 	if (isset( $_REQUEST['messageIDs'])) {
 		$messageIDs = explode( ',', $_REQUEST['messageIDs']);
