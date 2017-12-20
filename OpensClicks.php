@@ -65,8 +65,10 @@
 
 		    $totalRecs = $this->results->total;
 
+        $this->Log->writeToLog( '', $msg . " -- Retrieved ". $this->subMethod);
+
 		    // Process the opens/clicks
-		    if (isset($this->results)) {
+		    if (isset( $this->results)) {
 			    $recipientRepository = new \AlumniEmail\RecipientRepository($this->messageId);
 			    foreach ($this->results->data as $rec) {
 				    try {
