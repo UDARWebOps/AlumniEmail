@@ -33,15 +33,21 @@
       $messageIDs[] = $message->id;   // create array of msg ids
     }
   }
+  $log_msg = 'Number of messages to be processed: '. count( $newMessages);
+  $Log->writeToLog( '', $log_msg);
 
   // Now loop through the message id array and get the opens and clicks
   $countTypes = array( 'opens', 'clicks');
   foreach ($messageIDs as $messageId) {
+    $log_msg = 'Processing MsgID '. $messageId;
+    $Log->writeToLog( '', $log_msg);
     foreach ($countTypes as $countType) {
+      $log_msg = 'Getting '. $countType;
+      $Log->writeToLog( '', $log_msg);
 	    $OpensClicks = new OpensClicks( $messageId, $countType, $queryParams);
       // This calls the API to get the specified count
       $OpensClicks->retrieveOpensClicks();
     }
   }
-
+  $Log->writeToLog( '', '-------------- Finished '. $text);
   echo '<br/>Done getting opens/clicks!';
