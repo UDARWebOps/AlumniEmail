@@ -167,7 +167,7 @@
 							  `firstName` varchar(50) DEFAULT NULL,
 							  `lastName` varchar(100) DEFAULT NULL,
 							  `memberId` int(11) DEFAULT NULL,
-							  `constituentId` int(10) DEFAULT NULL,
+							  `constituentId` varchar(10) DEFAULT NULL,
 							  `emailReceives` varchar(500) DEFAULT NULL,
 							  `emailOpens` varchar(500) DEFAULT NULL,
 							  `emailClicks` varchar(500) DEFAULT NULL,
