@@ -21,7 +21,7 @@
       {
           $this->connection = $connection;
           if ($this->connection === null) {
-              $config = parse_ini_file( '/../config-email.ini');
+              $config = parse_ini_file( 'config-email.ini');
               $this->connection = new \PDO(
                       'mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'],
                       $config['username'],

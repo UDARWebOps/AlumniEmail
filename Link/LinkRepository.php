@@ -9,7 +9,7 @@
 
   use \PDO;
   require_once 'Link.php';
-  require_once '/Message/MessageRepository.php';
+  require_once 'Message/MessageRepository.php';
 
   class LinkRepository
   {

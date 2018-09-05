@@ -39,18 +39,22 @@
 
     //***********  R E T R I E V E  O P E N S  &  C L I C K S   ***************
     public function retrieveOpensClicks() {
+
       $urlItems = ['method'=>'messages', 'messageId'=>$this->messageId, 'subMethod'=>$this->subMethod];
 
       // Instantiate iModules API Obj passing URL params
       $myAPICall = new APICall( $urlItems);
-
+      $this->Log->writeToLog( '', "Test 1");
 	    $totalRecs = -1;
 
 	    // Loop for getting all opens/clicks
 	    // Call API passing in query parameters
 	    while ($totalRecs == -1 || ($this->queryParams['startAt'] < $totalRecs)) {
+        $this->Log->writeToLog( '', "Test 2: StartAt = " . $this->queryParams['startAt'] . ", maxResults = " . $this->queryParams['maxResults'] . ", totalRecs = " . $totalRecs);
+
 		    $this->results = $myAPICall->doAPI( $this->queryParams);
         $msg = '<OpensClicks::retrieveOpensClicks> MsgId = ' . $this->messageId;
+        $this->Log->writeToLog( '', "Test 3");
 
 		    // Check for ERROR
 		    if ($this->results instanceof \Exception) {
@@ -62,7 +66,7 @@
 			    $this->Log->writeToLog( '', "<MessageCounts::retrieveCount> MsgID: ". $this->messageId . " submethod = ". $this->subMethod . ", Error: " . $this->results->message);
 			    return;
 		    }
-
+        $this->Log->writeToLog( '', "Test 4");
 		    $totalRecs = $this->results->total;
 
         $this->Log->writeToLog( '', $msg . " -- Retrieved ". $this->subMethod);

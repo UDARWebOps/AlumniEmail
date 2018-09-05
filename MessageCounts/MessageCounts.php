@@ -8,7 +8,7 @@
 
 	namespace AlumniEmail;
 
-	require_once '/Log/Log.php';
+	require_once 'Log/Log.php';
 
 	class MessageCounts
   {

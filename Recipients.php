@@ -13,7 +13,7 @@
   require_once 'Message/MessageRepository.php';
 	require_once 'Log/Log.php';
 
-	define( BOOL_ON, 1);
+	define( 'BOOL_ON', 1);
 
 	class Recipients
   {
