@@ -20,11 +20,13 @@
       {
           $this->connection = $connection;
           if ($this->connection === null) {
-              $config = parse_ini_file( '/../config-email.ini');
+	          $temp = dirname(__FILE__);
+	          $config_path = dirname($temp, 1);
+	          $this->config = parse_ini_file( $config_path . '\config-email.ini');
               $this->connection = new \PDO(
-	              'mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'],
-                      $config['username'],
-                      $config['password']
+	              'mysql:host=' . $this->config['host'] . ';dbname=' . $this->config['dbname'],
+				              $this->config['username'],
+				              $this->config['password']
                   );
               $this->connection->setAttribute(
                   PDO::ATTR_ERRMODE,

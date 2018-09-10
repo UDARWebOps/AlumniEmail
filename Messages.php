@@ -82,7 +82,8 @@
 			    }
 			    // Loop through each message
 			    foreach ($messages->data as $message) {
-				    self::processMessage( new Message ($message));
+			    	$Message = new Message ($message);
+				    self::processMessage( $Message);
 			    }
 			    $totalRecs = $messages->total;
 			    $this->queryParams['startAt'] += $this->queryParams['maxResults'];    // Adjust counters for paging
