@@ -8,18 +8,20 @@
 	// This program is called with some query params:
 	//   1) with epoch dates:  get-messages-from-imods.php?method=messages&fromTimestamp=1503321145000&toTimestamp=2147483647000&startAt=0&maxResults=100
 	//   2) with formatted dates:  get-messages-from-imods.php?method=messages&fromTimestamp=9/1/2017&toTimestamp=9/30/2017&startAt=0&maxResults=100
-  namespace AlumniEmail;
 
-  require_once 'Log/Log.php';
-  require_once 'Messages.php';
+	namespace AlumniEmail;
+
+	require_once 'Log/Log.php';
+	require_once 'Messages.php';
 	require_once 'MessageCounts/MessageCounts.php';
 	require_once 'Links.php';
 	require_once 'Recipients.php';
 	require_once 'OpensClicks.php';
 
-  ini_set('max_execution_time',0);  // No timeout limit
+	error_reporting(E_ALL);
+	ini_set('max_execution_time',0);  // No timeout limit
 
-  $Log = new Log( __FILE__);
+	$Log = new Log( __FILE__);
   $Log->writeToLog( 'initiate');
   $messageIDs = array();
   // Check for messageIDs passed in
@@ -43,6 +45,7 @@
 		// Create new Messages object by passing in the parameters from the query string to this program (from, to, max results, etc.)
 		$messages = new Messages( $_REQUEST);
 		// Get the messages from iMods, save them to database, and get any new (non-processed) message IDs
+//		echo("<br> About to get messages");
 		$newMessages = $messages->retrieveMessages();
 	}
 
@@ -86,3 +89,17 @@
 	}
   $Log->writeToLog( '', '-------------- Finished '. $text);
 	echo '<br/>Done!';
+
+	$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$urlData = parse_url($url);
+	$host = $urlData['host'];
+
+	if ($host == 'udar.nyu.edu') {
+		$BaseURL = 'http://' . $host . '/qa_test/e-trans/imods-email-reporting';
+	} else {
+		$BaseURL = 'http://mhgdev.e-trans.com/imods-email-reporting';
+	}
+
+	// TODO: grab from & to dates from $request??
+
+	echo '<br/>Go to "<a href="' . $BaseURL . '" id="link-to-steps-page">Step 2: Get Statistics<a>"';

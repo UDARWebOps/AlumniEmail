@@ -17,6 +17,7 @@
 
     public function __construct( $data = null)
     {
+//    	echo ("<br>In iModsSendRequeset");
       if (is_array( $data)) {
           $this->sendMethod = $data['sendMethod'];
           $this->url = $data['url'];
@@ -28,14 +29,15 @@
     //---------------------------------------------------------
   	//
     public function send_request() {
+//	    echo("<br>In send_request");
       $parms = NULL;
 
   		if (isset( $this->queryParams)) {
   			$parms = self::stringify( $this->queryParams);
   		}
-
+//	    echo("<br>before curl_init");
   		$curl = curl_init();
-
+//	    echo("<br>after curl_init");
   		if ($this->sendMethod === "POST") {
   			curl_setopt_array ( $curl, array(
   					CURLOPT_URL => $this->url,
@@ -58,9 +60,10 @@
   				CURLOPT_HTTPHEADER => $this->header
   			));
   		}
+//	    echo("<br>about to exec curl");
 
   		$curl_response = curl_exec( $curl);
-
+//	    echo("<br>just executed curl");
 			if (curl_errno( $curl)) {
 //				curl_close( $curl);
 				throw new \Exception( curl_error( $curl));

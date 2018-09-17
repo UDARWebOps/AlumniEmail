@@ -50,3 +50,17 @@
 
   writeReport( $_REQUEST['year'], $_REQUEST['month']);
   echo 'Done writing email report for ' . $_REQUEST['year'] . '-' . $_REQUEST['month'] . '!';
+
+  $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+  $urlData = parse_url($url);
+  $host = $urlData['host'];
+
+  if ($host == 'udar.nyu.edu') {
+	  $BaseURL = 'http://' . $host . '/qa_test/e-trans/imods-email-reporting';
+  } else {
+	  $BaseURL = 'http://mhgdev.e-trans.com/imods-email-reporting';
+  }
+
+  // TODO: grab from & to dates from $request??
+
+  echo '<br/>Go back to "<a href="' . $BaseURL . '" id="link-to-steps-page">Email Marketing Report<a>"';

@@ -119,3 +119,17 @@
 
   echo 'Table recipient_stat_' . $_REQUEST['year'] . '_' . $_REQUEST['month'] . ' created successfully';
   echo '<br/>Done!';
+
+  $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+  $urlData = parse_url($url);
+  $host = $urlData['host'];
+
+  if ($host == 'udar.nyu.edu') {
+	  $BaseURL = 'http://' . $host . '/qa_test/e-trans/imods-email-reporting';
+  } else {
+	  $BaseURL = 'http://mhgdev.e-trans.com/imods-email-reporting';
+  }
+
+  // TODO: grab from & to dates from $request??
+
+  echo '<br/>Go to "<a href="' . $BaseURL . '" id="link-to-steps-page">Step 3: Write CSV File<a>"';

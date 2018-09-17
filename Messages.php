@@ -65,7 +65,9 @@
     //*********************************************
     public function retrieveMessages() {
       // Instantiate API Obj passing URL params
+//	    echo("<br>In retrieveMessages");
       $myAPICall = new APICall( $this->urlItems);
+//	    echo("<br>In retrieveMessages 2");
 	    $messages = $myAPICall->doAPI($this->queryParams);  // get a preview of data to determine multiple or single msg
 
 	    // ---------  M U L T I P L E   M E S S A G E S

@@ -23,17 +23,24 @@
 
     public function __construct( $data = null)
     {
-        if (is_array( $data)) {
-            $this->mainMethod = $data['method'];
+//	    echo("<br>In construct APICall");
+//	    echo('/n $data: ' . $data);
+	    if (is_array( $data)) {
+	        $this->mainMethod = $data['method'];
             $this->messageId = ($data['messageId']) ? $data['messageId'] . '/' : $data['messageId'];  // if not null, add slash
             $this->subMethod = $data['subMethod'];
+//		    echo("<br>Before authtoken");
             $this->AuthTokenRepository = new AuthTokenRepository();
+//		    echo("<br>After authtoken");
         }
-      return $this;
+//	    echo("Leaving construct APICall");
+
+	    return $this;
     }
 
     //*******************************************
     public function doAPI( array $params = NULL) {
+//    	echo("In doAPI");
       $this->header = array(
         'Authorization: Bearer '. $this->AuthTokenRepository->getToken(),
         'cache-control: no-cache'
@@ -46,6 +53,7 @@
         'header'    => $this->header
         );
 
+//	    echo("going to iModsSendRequest.  $ar = " . $ar);
       $this->SendRequest = new iModsSendRequest( $ar);
       try {
         return ($this->SendRequest->send_request());
